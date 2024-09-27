@@ -22,6 +22,8 @@ interface AppState {
   notification: { message: string, type: 'success' | 'error' | 'loading' } | null;
 }
 
+
+// OWNER OF THE SMART CONTRACT
 const VITE_APP_ADMIN="0x198f16eb157f98d651123d3c227b449eefb66d90b5d7f1183755fa73a631d3da";
 
 const pinata = new PinataSDK({
@@ -149,6 +151,8 @@ const App: React.FC = () => {
   };
 
   const initContractFtn = async () => {
+    // ONLY CAN INITIALIZE ONCE.
+    // ONLY THE OWNER OF THE SMART CONTRACT CAN CALL THIS. IF ANY OTHER ADDRESS WILL CALL THIS FUNCTION IT WILL BREAK THE SMART CONTRACT FUNCTIONALITY 
     if (!account || !signAndSubmitTransaction) return;
     try {
       const response = await signAndSubmitTransaction(
@@ -173,6 +177,7 @@ const App: React.FC = () => {
   const mintNFTs = async (_uri: string) => {
     if(!account || !signAndSubmitTransaction) return;
     try {
+      // PLEASE MAKE A UTIL FOLDER FOR THIS
       const response = await signAndSubmitTransaction(
         mintNFT({uri: _uri}),
       );

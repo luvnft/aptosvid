@@ -13,6 +13,8 @@ export const initContract = (): InputTransactionData => {
     }
 }
 
+// PLEASE REMOVE BELOW, NOT NEEDED
+
 // export const mintNFT = async (signAndSubmitTransaction: any, uri: string, price: number) => {
 //   const payload: Types.TransactionPayload = {
 //     type: "entry_function_payload",
