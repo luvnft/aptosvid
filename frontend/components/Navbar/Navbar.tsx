@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, connect, isConnected, is
   return (
     <nav>
       <div className="nav-left">
-        <p>NFT Theater</p>
+        <p>NFT Aptos</p>
       </div>
       <div className="nav-right">
         <p onClick={() => onRouteChange("explore")}>Explore</p>
