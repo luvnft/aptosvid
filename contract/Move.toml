@@ -1,0 +1,11 @@
+[package]
+name = "MessageBoard"
+version = "1.0.0"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "main"
+subdir = "aptos-move/framework/aptos-framework"
+
+[addresses]
+aptosnft = "198f16eb157f98d651123d3c227b449eefb66d90b5d7f1183755fa73a631d3da"
