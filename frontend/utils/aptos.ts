@@ -1,7 +1,5 @@
-import { Network, Provider } from "aptos";
 import { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
 
-export const provider = new Provider(Network.TESTNET);
 export const moduleAddress = "0x198f16eb157f98d651123d3c227b449eefb66d90b5d7f1183755fa73a631d3da";
 
 
@@ -53,11 +51,11 @@ export const mintNFT = (args: createMintArguments): InputTransactionData => {
 //   return (resource.data as any).total_nfts;
 // };
 
-export const getNFTById = async (id: number) => {
-  const resource = await provider.getAccountResource(
-    moduleAddress,
-    `${moduleAddress}::nftaptos::GlobalNFTData`
-  );
-  const nfts = (resource.data as any).nfts;
-  return nfts[id];
-};
+// export const getNFTById = async (id: number) => {
+//   const resource = await provider.getAccountResource(
+//     moduleAddress,
+//     `${moduleAddress}::nftaptos::GlobalNFTData`
+//   );
+//   const nfts = (resource.data as any).nfts;
+//   return nfts[id];
+// };

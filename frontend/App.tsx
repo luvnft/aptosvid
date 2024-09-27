@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import Navbar from "./components/Navbar/Navbar";
-import { provider, moduleAddress, initContract, mintNFT } from "./utils/aptos.ts";
+import { moduleAddress, initContract, mintNFT } from "./utils/aptos.ts";
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import { NETWORK } from "./constants.ts";
 import Scroll from "./components/Scroll/Scroll.tsx";
@@ -30,7 +30,6 @@ const pinata = new PinataSDK({
 });
 
 const App: React.FC = () => {
-  console.log(provider, moduleAddress)
   const [state, setState] = useState<AppState>({
     route: "explore",
     address: null,
