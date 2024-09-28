@@ -33,7 +33,7 @@ const CardList: React.FC<CardListProps> = ({ userNFTs}) => {
       {userNFTs.length === 0 ? (
         <p>No NFTs found.</p>
       ) : (
-        <div className="card-list">
+        <div className='flex flex-wrap gap-10 justify-center pb-5'>
           {cardComponents}
         </div>
       )}

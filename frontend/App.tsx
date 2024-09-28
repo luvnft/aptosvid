@@ -4,14 +4,15 @@ import Navbar from "./components/Navbar/Navbar";
 import { moduleAddress, initContract, mintNFT } from "./utils/aptos.ts";
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import { NETWORK } from "./constants.ts";
-import Scroll from "./components/Scroll/Scroll.tsx";
 import Explore from "./components/Explore/Explore.tsx";
 import Mint from "./components/Mint/Mint.tsx";
-import MyNFT from "./components/MyNFT/MyNFT.tsx";
 import { useQueryClient } from "@tanstack/react-query";
 import jws from "./contract/key.json";
 import { PinataSDK } from 'pinata-web3';
-import Notification from "./components/Notification/Notification.tsx";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "./App.css";
+import  Home  from "./components/Home/Home.tsx";
 
 interface AppState {
   route: string;
@@ -19,7 +20,7 @@ interface AppState {
   isInstalled: boolean;
   shouldFetchNFTs: boolean;
   nfts: any[];
-  notification: { message: string, type: 'success' | 'error' | 'loading' } | null;
+  isLoading: boolean;
 }
 
 
@@ -33,12 +34,12 @@ const pinata = new PinataSDK({
 
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>({
-    route: "explore",
+    route: "home",
     address: null,
     isInstalled: false,
     shouldFetchNFTs: true,
     nfts: [],
-    notification: null,
+    isLoading: false,
   });
 
   const { wallets, connect, connected, account, network, signAndSubmitTransaction } = useWallet();
@@ -82,11 +83,7 @@ const App: React.FC = () => {
     async function getAllNFTs() {
       if (connected && address) { 
         try {
-          setState(prev => ({
-            ...prev,
-            notification: { message: 'Loading NFTs...', type: 'loading' }
-          }));
-
+          setState(prev => ({ ...prev, isLoading: true}));
           const countRes = await aptos.view<[number]>({
             payload: {
               function: `${moduleAddress}::nftaptos::get_total_count`,
@@ -114,17 +111,12 @@ const App: React.FC = () => {
           }
 
           
-          setState(prev => ({ ...prev, shouldFetchNFTs: false, nfts }));
-          setState(prev => ({
-            ...prev,
-            notification: { message: 'NFTs loaded', type: 'success' }
-          }));
+          setState(prev => ({ ...prev, shouldFetchNFTs: false, nfts, isLoading: false }));
         } catch (error) {
           console.error('Error fetching NFTs:', error);
-          setState(prev => ({
-            ...prev,
-            notification: { message: 'Error fetching NFTs', type: 'error' }
-          }));
+          toast.error("Error fetching NFTs", {
+            position: "top-center"
+          })
         }
       }
     }
@@ -185,19 +177,20 @@ const App: React.FC = () => {
       await aptos.waitForTransaction({transactionHash: response.hash});
       queryClient.invalidateQueries();
       
+      toast.success("NFT minted successfully", {
+        position: "top-center"
+      });
       setState(prev => ({
         ...prev,
-        notification: { message: 'Minting successful!', type: 'success' },
         shouldFetchNFTs: true 
       }));
 
       onRouteChange("explore");
     } catch (e) {
       console.log(e)
-      setState(prev => ({
-        ...prev,
-        notification: { message: 'Error minting NFT', type: 'error' }
-      }));
+      toast.error('Error minting NFT:', {
+        position: "top-center"
+      });
     }
   }
 
@@ -207,6 +200,9 @@ const App: React.FC = () => {
     }
 
     try {
+      toast.info("Uploading video to IPFS", {
+        position:"top-center"
+      })
       const uploadImage = await pinata.upload.file(file);
       const metadata = await pinata.upload.json({
         name: name,
@@ -217,6 +213,9 @@ const App: React.FC = () => {
       return metadata.IpfsHash;
     } catch (error) {
       console.error("Error uploading to Pinata:", error);
+      toast.error("Minting NFT failed.", {
+        position: "top-center"
+      });
       throw new Error("Upload to Pinata failed.");
     }
   };
@@ -224,39 +223,36 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <Navbar
-        onRouteChange={onRouteChange}
-        isConnected={connected}
-        connect={onConnect}
-        address={address} 
-        isInstalled={state.isInstalled}
-      />
-      {
-        address === VITE_APP_ADMIN && 
-          <div>
-            <button onClick={initContractFtn}>Init contract</button>
+      <ToastContainer />
+      <div className="App min-h-screen">
+        <div className='gradient-bg-welcome h-screen w-screen'>
+          <Navbar
+            onRouteChange={onRouteChange}
+            isConnected={connected}
+            connect={onConnect}
+            address={address} 
+            isInstalled={state.isInstalled}
+            />
+            <div>
+
+          {
+            address === VITE_APP_ADMIN && 
+            <div>
+                <button onClick={initContractFtn}>Init contract</button>
+              </div>
+          }
+          {state.route === "home" ? (
+              <Home onRouteChange={onRouteChange}/>
+          ) : state.route === "explore" ? (
+              <Explore nfts={state.nfts} isConnected={connected} isLoading={state.isLoading} />
+          ) : state.route === "mint" ? (
+              <Mint uploadToPinata={uploadToPinata} mintNFT={mintNFTs} />
+          ) : (
+              <>Cannot find page</>
+          )}
           </div>
-      }
-      {state.route === "explore" ? (
-        <Scroll>
-          <Explore nfts={state.nfts} isConnected={connected}/>
-        </Scroll>
-      ) : state.route === "mint" ? (
-        <Mint uploadToPinata={uploadToPinata} mintNFT={mintNFTs} />
-      ) : (
-        <MyNFT 
-          myNfts={state.nfts} 
-          isConnected={connected} 
-          userAddress={address}
-        />
-      )}
-      {state.notification && (
-        <Notification
-          message={state.notification.message}
-          type={state.notification.type}
-          onClose={() => setState(prev => ({ ...prev, notification: null }))}
-        />
-      )}
+        </div>
+      </div>
     </div>
   );
 };

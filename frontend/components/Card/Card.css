@@ -1,3 +1,9 @@
+.card-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping if there are too many cards */
+  gap: 20px; /* Adjust the spacing between cards */
+  justify-content: flex-start; /* Aligns the cards to the left */
+}
 
 .card-container {
   text-align: center;              
@@ -26,55 +32,10 @@
 .card-details h2 {
   font-size: 24px;
   margin-bottom: 10px;
-  color: #333;
+  color: #ffffff; /* Change to white for better contrast */
 }
 
 .card-details p {
   font-size: 16px;
-  color: #555;
-}
-
-.video-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.overlay-content {
-  position: relative;
-  width: 80%;
-  max-width: 800px;
-}
-
-.overlay-video {
-  width: 100%;
-  border-radius: 8px;
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 4px;
-}
-
-.close-button:hover {
-  background-color: #ff1a1a;
-}
-
-.blur-background {
-  filter: blur(5px);
+  color: #dddddd; /* Change to a lighter gray */
 }

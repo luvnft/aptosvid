@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import './Mint.css';
 
 interface MintProps {
     uploadToPinata: (file: File, name: string, description: string) => Promise<string>;
@@ -32,7 +31,7 @@ const Mint: React.FC<MintProps> = ({ uploadToPinata, mintNFT }) => {
     };
 
     const handleMint = async () => {
-        if ( !file || !name || !description) {
+        if (!file || !name || !description) {
             alert('Please complete all fields');
             return;
         }
@@ -41,7 +40,6 @@ const Mint: React.FC<MintProps> = ({ uploadToPinata, mintNFT }) => {
 
         try {
             const IpfsHash = await uploadToPinata(file, name, description);
-            // const IpfsHash = `bafkreifw25xdtob666hxqytrgmkffqajdhgann5rfw75le6a57djsrso24`
             mintNFT(IpfsHash);
             clearImage();
         } catch (e) {
@@ -52,46 +50,52 @@ const Mint: React.FC<MintProps> = ({ uploadToPinata, mintNFT }) => {
     };
 
     return (
-        <div className="mint-container">
-            <h2>Mint Your NFT</h2>
-            <div {...getRootProps({ className: 'dropzone' })}>
+        <div className="flex flex-col items-center justify-center min-h-screen text-white pt-15">
+            <h2 className="text-3xl font-bold mb-6">Mint Your NFT</h2>
+            <div 
+                {...getRootProps({ className: 'border-2 border-dashed border-purple-500 rounded-lg p-6 mb-4 text-center' })}>
                 <input {...getInputProps()} />
                 {file ? (
                     <div>
-                        <img src={file.preview} alt="Preview" className="preview-image" />
+                        <img src={file.preview} alt="Preview" className="max-w-full rounded-lg" />
                     </div>
                 ) : (
-                    <p>Drag & drop an image file, or click to select one</p>
+                    <a className="text-purple-500">Drag & drop an image file, or click to select one</a>
                 )}
             </div>
             {file && (
-                <button 
-                    className='mint-button'
-                    onClick={clearImage} 
-                >
+                <button
+                    onClick={clearImage}
+                    className="bg-red-500 text-white rounded-lg px-4 py-2 mb-4">
                     Clear
                 </button>
             )}
 
-            <div className="form-field">
-                <label>Name:</label>
-                <input 
-                    type="text" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    placeholder="Enter NFT Name" 
+            <div className="w-full max-w-md mb-4">
+                <label className="block mb-2">Name:</label>
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter NFT Name"
+                    className="w-full p-2 rounded-lg border border-gray-300"
                 />
             </div>
 
-            <div className="form-field">
-                <label>Description:</label>
+            <div className="w-full max-w-md mb-4">
+                <label className="block mb-2">Description:</label>
                 <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter NFT Description"
+                    className="w-full p-2 rounded-lg border border-gray-300"
                 />
             </div>
-            <button onClick={handleMint} disabled={isMinting} className='mint-button'>
+            <button
+                onClick={handleMint}
+                disabled={isMinting}
+                className={`bg-purple-500 text-white rounded-lg px-4 py-2 ${isMinting ? 'cursor-not-allowed' : 'hover:bg-purple-600'}`}
+            >
                 {isMinting ? 'Minting...' : 'Mint NFT'}
             </button>
         </div>
