@@ -78,7 +78,7 @@ const Mint: React.FC<MintProps> = ({ uploadToPinata, mintNFT }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter NFT Name"
-                    className="w-full p-2 rounded-lg border border-gray-300"
+                    className="w-full p-2 rounded-lg border border-gray-300 text-black"
                 />
             </div>
 
@@ -88,7 +88,7 @@ const Mint: React.FC<MintProps> = ({ uploadToPinata, mintNFT }) => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter NFT Description"
-                    className="w-full p-2 rounded-lg border border-gray-300"
+                    className="w-full p-2 rounded-lg border border-gray-300 text-black"
                 />
             </div>
             <button
