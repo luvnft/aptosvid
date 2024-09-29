@@ -1,12 +1,15 @@
 import { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
 
-export const moduleAddress = "0x198f16eb157f98d651123d3c227b449eefb66d90b5d7f1183755fa73a631d3da";
+export const moduleAddress = "0x82c67090745c8d17f9abd8947c222fb2b6900cdf8f2249dd7452462f43edf81f";
 
+const convertAmountFromHumanReadableToOnChain = (value: number) => {
+  return value * Math.pow(10, 8);
+};
 
 export const initContract = (): InputTransactionData => {
     return {
         data: {
-          function: `${moduleAddress}::nftaptos::init_contract`,
+          function: `${moduleAddress}::videonft::init_contract`,
           typeArguments: [],
           functionArguments: [],
         }
@@ -28,21 +31,45 @@ export const initContract = (): InputTransactionData => {
 
 export type createMintArguments = {
   uri: string;
+  price: number;
 }
 
 export const mintNFT = (args: createMintArguments): InputTransactionData => {
-  const { uri} = args;
+  const { uri, price} = args;
+
+  const priceToSend = convertAmountFromHumanReadableToOnChain(price)
 
   return {
     data: {
-      function: `${moduleAddress}::nftaptos::mint_nft`,
+      function: `${moduleAddress}::videonft::mint_nft`,
       typeArguments: [],
       functionArguments: [
         uri,
+        priceToSend ? priceToSend : 0,
       ],
     },
   };
 };
+
+export type payArgument = {
+  id: number;
+}
+
+export const payForPlay = (args:payArgument): InputTransactionData => {
+  const {id} = args;
+
+  const moveId = id - 1;
+
+  return {
+    data: {
+      function: `${moduleAddress}::videonft::pay_for_watch`,
+      typeArguments: [],
+      functionArguments: [
+        moveId,
+      ],
+    }
+  }
+}
 
 // export const getTotalCount = async () => {
 //   const resource = await provider.getAccountResource(

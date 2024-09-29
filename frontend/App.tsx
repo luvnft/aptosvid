@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import Navbar from "./components/Navbar/Navbar";
-import { moduleAddress, initContract, mintNFT } from "./utils/aptos.ts";
+import { moduleAddress, initContract, mintNFT, payForPlay } from "./utils/aptos.ts";
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import { NETWORK } from "./constants.ts";
 import Explore from "./components/Explore/Explore.tsx";
@@ -21,11 +21,13 @@ interface AppState {
   shouldFetchNFTs: boolean;
   nfts: any[];
   isLoading: boolean;
+  canPlay: boolean;
+  url: string | null;
 }
 
 
 // OWNER OF THE SMART CONTRACT
-const VITE_APP_ADMIN="0x198f16eb157f98d651123d3c227b449eefb66d90b5d7f1183755fa73a631d3da";
+const VITE_APP_ADMIN="0x82c67090745c8d17f9abd8947c222fb2b6900cdf8f2249dd7452462f43edf81f";
 
 const pinata = new PinataSDK({
   pinataJwt: jws.jws,
@@ -40,6 +42,8 @@ const App: React.FC = () => {
     shouldFetchNFTs: true,
     nfts: [],
     isLoading: false,
+    canPlay: false,
+    url: null,
   });
 
   const { wallets, connect, connected, account, network, signAndSubmitTransaction } = useWallet();
@@ -86,7 +90,7 @@ const App: React.FC = () => {
           setState(prev => ({ ...prev, isLoading: true}));
           const countRes = await aptos.view<[number]>({
             payload: {
-              function: `${moduleAddress}::nftaptos::get_total_count`,
+              function: `${moduleAddress}::videonft::get_total_count`,
               functionArguments: [],
             },
           });
@@ -97,7 +101,7 @@ const App: React.FC = () => {
           for(let i =0; i<count; i++ ){
             const nftsRes = await aptos.view<[{ id: number, owner: string, uri: string }]>( {
               payload: {
-                  function: `${moduleAddress}::nftaptos::get_nft_by_id`,
+                  function: `${moduleAddress}::videonft::get_nft_by_id`,
                   functionArguments: [i],
               },
             });
@@ -166,12 +170,13 @@ const App: React.FC = () => {
     setState(prev => ({ ...prev, route }));
   };
 
-  const mintNFTs = async (_uri: string) => {
+  const mintNFTs = async (_uri: string, _price: string) => {
     if(!account || !signAndSubmitTransaction) return;
     try {
       // PLEASE MAKE A UTIL FOLDER FOR THIS
+      const priceInNumber = Number(_price);
       const response = await signAndSubmitTransaction(
-        mintNFT({uri: _uri}),
+        mintNFT({uri: _uri, price: priceInNumber}),
       );
 
       await aptos.waitForTransaction({transactionHash: response.hash});
@@ -194,7 +199,43 @@ const App: React.FC = () => {
     }
   }
 
-  const uploadToPinata = async (file: File, name: string, description: string): Promise<string> => {
+  const handlePay = async (id: number, url: string) => {
+    if(!account || !signAndSubmitTransaction) return;
+    console.log("click")
+
+    try {
+      const response = await signAndSubmitTransaction(
+        payForPlay({id}),
+      );
+
+      await aptos.waitForTransaction({transactionHash: response.hash});
+      queryClient.invalidateQueries();
+
+      toast.success("Please enjoy", {
+        position: "top-center"
+      });
+      setState(prev => ({
+        ...prev,
+        canPlay: true,
+        url,
+      }));
+    }catch (e) {
+      console.log(e)
+      toast.error('Error paying NFT:', {
+        position: "top-center"
+      });
+    }
+  }
+
+  const handleCloseVideo = () => {
+    setState(prev => ({
+      ...prev,
+      canPlay: false,
+      url: null,
+    }))
+  }
+
+  const uploadToPinata = async (file: File, name: string, description: string, price: string): Promise<string> => {
     if (!file) {
       throw new Error("File is required");
     }
@@ -208,6 +249,7 @@ const App: React.FC = () => {
         name: name,
         description: description,
         video: `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${uploadImage.IpfsHash}`,
+        price: price
       });
 
       return metadata.IpfsHash;
@@ -244,7 +286,7 @@ const App: React.FC = () => {
           {state.route === "home" ? (
               <Home onRouteChange={onRouteChange}/>
           ) : state.route === "explore" ? (
-              <Explore nfts={state.nfts} isConnected={connected} isLoading={state.isLoading} />
+              <Explore nfts={state.nfts} isConnected={connected} isLoading={state.isLoading} canPlay={state.canPlay} handlePay={handlePay} url={state.url} handleCloseVideo={handleCloseVideo}/>
           ) : state.route === "mint" ? (
               <Mint uploadToPinata={uploadToPinata} mintNFT={mintNFTs} />
           ) : (

@@ -8,4 +8,4 @@ rev = "main"
 subdir = "aptos-move/framework/aptos-framework"
 
 [addresses]
-aptosnft = "198f16eb157f98d651123d3c227b449eefb66d90b5d7f1183755fa73a631d3da"
+aptosnft = "82c67090745c8d17f9abd8947c222fb2b6900cdf8f2249dd7452462f43edf81f"

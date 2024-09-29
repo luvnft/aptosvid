@@ -23,7 +23,7 @@
 .card-div {
   flex: 1 1 250px; /* Ensure cards are responsive and take up equal space */
   max-width: 250px; /* Define the maximum width of cards */
-  height: 395px; /* Set a fixed height for the cards */
+  height: 370px; /* Set a fixed height for the cards */
   transition: all 0.2s;
   position: relative;
   cursor: pointer;

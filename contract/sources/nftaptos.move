@@ -1,12 +1,15 @@
-module aptosnft::nftaptos {
+module aptosnft::videonft {
     use std::string::{Self, String};
     use std::signer;
     use std::vector;
+    use aptos_framework::aptos_coin;
+    use aptos_framework::coin;
 
-    struct NFT has store, copy{
+    struct NFT has store, copy, drop{
         id: u64,
         owner: address,
         uri: String,
+        price: u64
     }
 
     struct GlobalNFTData has key {
@@ -24,7 +27,7 @@ module aptosnft::nftaptos {
         move_to(sender, global_data);
     }
 
-    public entry fun mint_nft(account: &signer, _uri: String) acquires GlobalNFTData{
+    public entry fun mint_nft(account: &signer, _uri: String, _price: u64) acquires GlobalNFTData{
         let minter = signer::address_of(account);
 
         let data = borrow_global_mut<GlobalNFTData>(MY_ADDR);
@@ -34,6 +37,7 @@ module aptosnft::nftaptos {
             id: data.total_nfts,
             owner: minter,
             uri: _uri,
+            price: _price,
         };
 
         vector::push_back(&mut data.nfts, new_nft);
@@ -54,5 +58,13 @@ module aptosnft::nftaptos {
         let nft_copy = *nft_ref;
 
         nft_copy
+    }
+
+    public entry fun pay_for_watch(sender: &signer, id: u64) acquires GlobalNFTData{
+        let nft = get_nft_by_id(id);
+        let price = nft.price;
+        let receiver = nft.owner;
+        let coin = coin::withdraw<aptos_coin::AptosCoin>(sender, price);
+        coin::deposit(receiver, coin);
     }
 }
