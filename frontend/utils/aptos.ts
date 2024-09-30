@@ -1,9 +1,12 @@
-import { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
+import { InputTransactionData } from "@aptos-labs/wallet-adapter-react";
+import Big from 'big.js';
 
 export const moduleAddress = "0x82c67090745c8d17f9abd8947c222fb2b6900cdf8f2249dd7452462f43edf81f";
 
 const convertAmountFromHumanReadableToOnChain = (value: number) => {
-  return value * Math.pow(10, 8);
+  const bigValue = new Big(value); 
+  const result = bigValue.times(Math.pow(10, 8)); 
+  return Number(result.toFixed());
 };
 
 export const initContract = (): InputTransactionData => {
@@ -38,6 +41,7 @@ export const mintNFT = (args: createMintArguments): InputTransactionData => {
   const { uri, price} = args;
 
   const priceToSend = convertAmountFromHumanReadableToOnChain(price)
+  console.log(priceToSend," Is sending")
 
   return {
     data: {

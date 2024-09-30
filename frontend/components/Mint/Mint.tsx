@@ -40,15 +40,16 @@ const Mint: React.FC<MintProps> = ({ uploadToPinata, mintNFT }) => {
     };
 
     const handleMint = async () => {
-        if (!file || !name || !description) {
-            alert('Please complete all fields');
-            return;
-        }
+        // if (!file || !name || !description) {
+        //     alert('Please complete all fields');
+        //     return;
+        // }
 
         setIsMinting(true);
 
         try {
-            const IpfsHash = await uploadToPinata(file, name, description, price);
+            // const IpfsHash = await uploadToPinata(file, name, description, price);
+            const IpfsHash = "asdasd"
             mintNFT(IpfsHash, price);
             clearVideo();
         } catch (e) {
