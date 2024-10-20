@@ -31,7 +31,7 @@ const VITE_APP_ADMIN="0x82c67090745c8d17f9abd8947c222fb2b6900cdf8f2249dd7452462f
 
 const pinata = new PinataSDK({
   pinataJwt: jws.jws,
-  pinataGateway: "beige-sophisticated-baboon-74.mypinata.cloud",
+  pinataGateway: "ppvapt.mypinata.cloud",
 });
 
 const App: React.FC = () => {
@@ -105,7 +105,7 @@ const App: React.FC = () => {
                   functionArguments: [i],
               },
             });
-            const data = await pinata.gateways.get(`https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${nftsRes[0].uri}`);
+            const data = await pinata.gateways.get(`https://ppvapt.mypinata.cloud/ipfs/${nftsRes[0].uri}`);
 
             const mergedNFTData = {
               ...(typeof nftsRes[0] === 'object' ? nftsRes[0] : {}),
@@ -248,7 +248,7 @@ const App: React.FC = () => {
       const metadata = await pinata.upload.json({
         name: name,
         description: description,
-        video: `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${uploadImage.IpfsHash}`,
+        video: `https://ppvapt.mypinata.cloud/ipfs/${uploadImage.IpfsHash}`,
         price: price
       });
 
@@ -266,8 +266,8 @@ const App: React.FC = () => {
   return (
     <div>
       <ToastContainer />
-      <div className="App min-h-screen">
-        <div className='gradient-bg-welcome h-screen w-screen'>
+      <div className="min-h-screen App">
+        <div className='w-screen h-screen gradient-bg-welcome'>
           <Navbar
             onRouteChange={onRouteChange}
             isConnected={connected}

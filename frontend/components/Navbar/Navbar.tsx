@@ -15,23 +15,23 @@ const Navbar: React.FC<NavbarProps> = ({ onRouteChange, connect, isConnected, is
   };
 
   return (
-    <div className="fixed z-10 backdrop-blur-sm mt-5">
+    <div className="fixed z-10 mt-5 backdrop-blur-sm">
       <section className="relative mx-auto">
-        <nav className="flex justify-between items-center text-white w-screen px-24">
+        <nav className="flex items-center justify-between w-screen px-24 text-white">
           <div className="flex items-center">
             <a className="text-3xl font-bold font-heading" onClick={() => onRouteChange("home")}>
-              Ignitus Network
+              PPVAPT
             </a>
           </div>
 
           <ul className="flex space-x-12 font-semibold font-heading">
             <li>
-              <a className='no-underline text-gray-200 ' onClick={() => onRouteChange("explore")}>
-                Explore Video NFTs
+              <a className='text-gray-200 no-underline ' onClick={() => onRouteChange("explore")}>
+                Play
               </a>
             </li>
             <li>
-              <a className='no-underline text-gray-200' onClick={() => onRouteChange("mint")}>
+              <a className='text-gray-200 no-underline' onClick={() => onRouteChange("mint")}>
                 Mint
               </a>
             </li>

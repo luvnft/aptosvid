@@ -7,11 +7,11 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onRouteChange }) => {
   return (
-    <div className='text-white flex justify-around items-center pt-32 max-h-screen'>
+    <div className='flex items-center justify-around max-h-screen pt-32 text-white'>
       <div className='mb-16'>
-        <h1 className='font-semibold text-6xl'>
-          Create and view<br />
-          <span className='font-thin text-sky-400'>Video NFTs</span>
+        <h1 className='text-6xl font-semibold'>
+          Create and play<br />
+          <span className='font-thin text-sky-400'>Video PPV</span>
         </h1>
         <button 
           onClick={() => onRouteChange("explore")}

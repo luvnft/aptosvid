@@ -39,9 +39,9 @@ const CardList: React.FC<CardListProps> = ({ userNFTs, handlePay, isPlaying}) =>
   return (
     <div>
       {userNFTs.length === 0 ? (
-        <p>No NFTs found.</p>
+        <p>No PPVs found.</p>
       ) : (
-        <div className='flex flex-wrap gap-10 justify-center pb-5'>
+        <div className='flex flex-wrap justify-center gap-10 pb-5'>
           {cardComponents}
         </div>
       )}
